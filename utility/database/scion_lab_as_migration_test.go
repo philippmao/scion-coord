@@ -1,8 +1,9 @@
 package main
 
 import (
-	"testing"
 	"strconv"
+	"testing"
+	"time"
 
 	"github.com/netsec-ethz/scion-coord/config"
 	"github.com/netsec-ethz/scion-coord/models"
@@ -12,73 +13,95 @@ import (
 func Test(t *testing.T) {
 	// Initialize DB
 	server := &models.SCIONLabServer{
-		IA:			config.SERVER_IA,
-		IP: 		config.SERVER_IP,
+		IA:                config.SERVER_IA,
+		IP:                config.SERVER_IP,
 		LastAssignedPort:  50003,
-		VPNIP:		config.SERVER_VPN_IP,
-		VPNLastAssignedIP:  config.SERVER_VPN_END_IP,
+		VPNIP:             config.SERVER_VPN_IP,
+		VPNLastAssignedIP: config.SERVER_VPN_END_IP,
 	}
 	err := server.Insert()
 	if err != nil {
 		t.Fatal(err)
 	}
-	var i = 0
-	for i < 5{
+	var i = 1
+	for i < 5 {
 		iString := strconv.Itoa(i)
-		u, err := models.RegisterUser("ac" + iString, "ETH", "mail" + iString, "pw", iString, iString)
+		u, err := models.RegisterUser("ac"+iString, "ETH", "mail"+iString, "pw", iString, iString)
 		if err != nil {
 			t.Fatal(err)
 		}
 		as := &models.As{
-			Isd:	1,
-			As: 	i,
+			Isd:     1,
+			As:      i,
 			Account: u.Account,
+			Created: time.Now().UTC(),
 		}
 		err = as.Insert()
-		if err != nil{
+		if err != nil {
 			t.Fatal(err)
 		}
 		vm := &models.SCIONLabVM{
 			UserEmail:    "mail" + strconv.Itoa(i),
-			IP:		utility.IPIncrement(config.SERVER_VPN_START_IP, int32(i)),
-			IA:		as,
-			IsVPN:  true,
-			RemoteIA:	config.SERVER_IA,
-			RemoteIAPort:	50000+i,
+			IP:           utility.IPIncrement(config.SERVER_VPN_START_IP, int32(i)),
+			IA:           as,
+			IsVPN:        true,
+			RemoteIA:     config.SERVER_IA,
+			RemoteIAPort: 50000 + i,
 		}
 		err = vm.Insert()
-		if err != nil{
+		if err != nil {
 			t.Fatal(err)
 		}
 		i++
 	}
 	i = 5
-	for i< 7{
+	for i < 7 {
 		iString := strconv.Itoa(i)
-		u, err := models.RegisterUser("ac" + iString, "ETH", "mail" + iString, "pw", iString, iString)
+		u, err := models.RegisterUser("ac"+iString, "ETH", "mail"+iString, "pw", iString, iString)
 		if err != nil {
 			t.Fatal(err)
 		}
 		as := &models.As{
-			Isd:	1,
-			As: 	i,
+			Isd:     1,
+			As:      i,
 			Account: u.Account,
+			Created: time.Now().UTC(),
 		}
 		err = as.Insert()
-		if err != nil{
+		if err != nil {
 			t.Fatal(err)
 		}
 		vm := &models.SCIONLabVM{
 			UserEmail:    "mail" + strconv.Itoa(i),
-			IP:		utility.IPIncrement("1.2.3.4", int32(i)),
-			IA:		as,
-			IsVPN:  false,
-			RemoteIA:	config.SERVER_IA,
-			RemoteIAPort:	50000+i,
+			IP:           utility.IPIncrement("1.2.3.4", int32(i)),
+			IA:           as,
+			IsVPN:        false,
+			RemoteIA:     config.SERVER_IA,
+			RemoteIAPort: 50000 + i,
 		}
 		err = vm.Insert()
-		if err != nil{
+		if err != nil {
 			t.Fatal(err)
+		}
+		i++
+	}
+	err = migrateDB()
+	if err != nil {
+		t.Fatal(err)
+	}
+	i = 1
+	for i < 8 {
+		slas, err := models.FindSCIONLabASByIAInt(1, i)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Logf("slas found, IA: %v-%v, Info: %v", 1, i, slas)
+		cnInfo, err := slas.GetConnectionInfo()
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, cn := range cnInfo {
+			t.Logf("cnInfo found,Info: %v", cn)
 		}
 		i++
 	}

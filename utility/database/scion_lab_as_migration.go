@@ -8,10 +8,10 @@ import (
 	"github.com/netsec-ethz/scion/go/lib/addr"
 )
 
-func migrateDB () error {
+func migrateDB() error {
 	// Migrate ScionLabserver 1-7 to the Database
 	sLabServer, err := models.FindSCIONLabServer(config.SERVER_IA)
-	if err != nil{
+	if err != nil {
 		return err
 	}
 	ia, err := addr.IAFromString(config.SERVER_IA)
@@ -35,23 +35,23 @@ func migrateDB () error {
 		AS:        ia.A,
 		Status:    models.CREATE,
 		Type:      models.SERVER,
-		AP:		   apServer,
+		AP:        apServer,
 	}
 	err = slasServer.Insert()
 	if err != nil {
 		return err
 	}
 	sLabVMs, err := models.FindSCIONLabVMsByRemoteIA(config.SERVER_IA)
-	if err != nil{
-		return err
+	if err != nil {
+		return fmt.Errorf("Error looking for VMs IA: %v", config.SERVER_IA)
 	}
 	var ip string
-	for _,sLabVM := range sLabVMs{
+	for _, sLabVM := range sLabVMs {
 		// add SCIONLabAS entry to database
-		if sLabVM.IsVPN{
+		if sLabVM.IsVPN {
 			// VM is connected via VPN -> no public IP
 			ip = "0.0.0.0"
-		}else{
+		} else {
 			ip = sLabVM.IP
 		}
 		slas := &models.SCIONLabAS{
@@ -63,10 +63,14 @@ func migrateDB () error {
 			Status:    models.CREATE,
 			Type:      models.VM,
 		}
+		err = slas.Insert()
+		if err != nil {
+			return fmt.Errorf("Error inserting slas: %v", slas)
+		}
 		var respondIP string
-		if sLabVM.IsVPN{
+		if sLabVM.IsVPN {
 			respondIP = config.SERVER_VPN_IP
-		}else{
+		} else {
 			respondIP = config.SERVER_IP
 		}
 		// TODO what are the BrIds of the SlabServer ?
@@ -78,27 +82,25 @@ func migrateDB () error {
 			JoinAS:        slas,
 			RespondAP:     apServer,
 			JoinBRID:      1,
-			RespondBRID:   sLabVM.RemoteIAPort-50001+ServerBRIDoffset,
+			RespondBRID:   sLabVM.RemoteIAPort - 50001 + ServerBRIDoffset,
 			Linktype:      models.PARENT,
 			IsVPN:         sLabVM.IsVPN,
 			JoinStatus:    models.ACTIVE,
 			RespondStatus: models.ACTIVE,
 		}
 		err = connection.Insert()
-		if err != nil{
-			return err
+		if err != nil {
+			return fmt.Errorf("Error inserting Connection: %v", connection)
 		}
 	}
 	return nil
 }
 
-
-
 func main() {
 	err := migrateDB()
 	if err != nil {
 		fmt.Println("Error migrating DB: %v", err)
-	}else{
+	} else {
 		fmt.Println("Succesfully migrated DB")
 	}
 }
