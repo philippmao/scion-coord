@@ -57,7 +57,7 @@ func migrateDB() error {
 		slas := &models.SCIONLabAS{
 			UserMail:  sLabVM.UserEmail,
 			PublicIP:  ip,
-			StartPort: config.SERVER_START_PORT,
+			StartPort: 50000,
 			ISD:       sLabVM.IA.Isd,
 			AS:        sLabVM.IA.As,
 			Status:    models.CREATE,
@@ -73,8 +73,6 @@ func migrateDB() error {
 		} else {
 			respondIP = config.SERVER_IP
 		}
-		// TODO what are the BrIds of the SlabServer ?
-		var ServerBRIDoffset = 0
 		// add Connection for that VM
 		connection := models.Connection{
 			JoinIP:        sLabVM.IP,
@@ -82,7 +80,7 @@ func migrateDB() error {
 			JoinAS:        slas,
 			RespondAP:     apServer,
 			JoinBRID:      1,
-			RespondBRID:   sLabVM.RemoteIAPort - 50001 + ServerBRIDoffset,
+			RespondBRID:   sLabVM.RemoteIAPort - 50000,
 			Linktype:      models.PARENT,
 			IsVPN:         sLabVM.IsVPN,
 			JoinStatus:    models.ACTIVE,
