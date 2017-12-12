@@ -149,7 +149,7 @@ func main() {
 
 	// initialize test database
 	u1, err := models.RegisterUser("ac1", "ETH", "mail1", "pw", "a", "b")
-	fmt.Printf("ID: %v, SECRET: %v", u1.Account.Id, u1.Account.Secret)
+	fmt.Printf("ID: %v, SECRET: %v", u1.Account.AccountId, u1.Account.Secret)
 	if err != nil {
 		return
 	}
