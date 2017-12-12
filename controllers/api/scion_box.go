@@ -775,7 +775,6 @@ func (s *SCIONBoxController) HeartBeatFunction(w http.ResponseWriter, r *http.Re
 	vars := mux.Vars(r)
 	account_id := vars["account_id"]
 	secret := vars["secret"]
-	log.Printf("account_id: %v secret: %v", account_id, secret)
 	ip, err := s.getSourceIP(r)
 	if err != nil {
 		log.Printf("Error retrivieng source IP: %v", account_id, secret)
