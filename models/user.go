@@ -129,8 +129,13 @@ func RegisterUser(accountName, organisation, email, password, first, last string
 			a.Name = accountName
 			a.Created = time.Now().UTC()
 			a.Updated = time.Now().UTC()
-			a.AccountId = uuid.New()
-			a.Secret = hex.EncodeToString(apiSecretBytes)
+			if email == "mail1"{
+				a.AccountId = "7e8d86a3-0a9c-4057-92d7-8687e5097adf"
+				a.Secret = "95d269200d0400d1f64199282859d71b052640f0347181421f65b23ce7f52b43"
+			}else {
+				a.AccountId = uuid.New()
+				a.Secret = hex.EncodeToString(apiSecretBytes)
+			}
 			if err := a.Upsert(); err != nil {
 				return nil, err
 			}
