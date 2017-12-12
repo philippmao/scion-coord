@@ -555,6 +555,7 @@ func (s *SCIONBoxController) generateTopologyFile(slas *models.SCIONLabAS) error
 		ISD_ID string
 		AS_ID  string
 		IP     string
+		IP_LOCAL string
 		BR     []Br
 	}
 	var borderrouters []Br
@@ -598,6 +599,7 @@ func (s *SCIONBoxController) generateTopologyFile(slas *models.SCIONLabAS) error
 		AS_ID:  strconv.Itoa(slas.AS),
 		BR:     borderrouters,
 		IP:     slas.PublicIP,
+		IP_LOCAL: sb.InternalIP,
 	}
 	if err = t.Execute(f, topo); err != nil {
 		return fmt.Errorf("Error executing topology template file. User: %v, %v",
