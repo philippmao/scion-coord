@@ -147,6 +147,94 @@ func main() {
 		return
 	}
 
+	// initialize test database
+	u1, err := models.RegisterUser("ac1", "ETH", "mail1", "pw", "a", "b")
+	if err != nil {
+		return
+	}
+	u2, err := models.RegisterUser("ac2", "ETH", "mail2", "pw2", "c", "d")
+	if err != nil {
+		return
+	}
+	slas1 := &models.SCIONLabAS{
+		UserMail:  u1.Email,
+		PublicIP:  "18.216.205.244",
+		StartPort: 50000,
+		ISD:       1,
+		AS:        1016,
+		Status:    models.ACTIVE,
+		Type:      models.DEDICATED,
+	}
+	slas2 := &models.SCIONLabAS{
+		UserMail:  "admin@ethz.ch",
+		PublicIP:  "192.33.93.195",
+		StartPort: 50000,
+		ISD:       1,
+		AS:        7,
+		Status:    models.INACTIVE,
+		Type:      models.DEDICATED,
+	}
+	err = slas1.Insert()
+	if err != nil {
+		return
+	}
+	err = slas2.Insert()
+	if err != nil {
+		return
+	}
+	ap1 := &models.AttachmentPoint{
+		VPNIP:      "0.0.0.0",
+		StartVPNIP: "0.0.0.0",
+		EndVPNIP:   "0.0.0.0",
+	}
+	ap2 := &models.AttachmentPoint{
+		VPNIP:      "10.0.0.1",
+		StartVPNIP: "10.0.0.2",
+		EndVPNIP:   "10.0.0.255",
+	}
+	err = ap1.Insert()
+	if err != nil {
+		return
+	}
+	slas1.AP = ap1
+	err = slas1.Update()
+	if err != nil {
+		return
+	}
+	err = ap2.Insert()
+	if err != nil {
+		return
+	}
+	slas2.AP = ap2
+	err = slas2.Update()
+	if err != nil {
+		return
+	}
+	cn1 := models.Connection{
+		JoinIP:        slas1.PublicIP,
+		RespondIP:     slas2.PublicIP,
+		JoinAS:        slas1,
+		RespondAP:     slas2.AP,
+		JoinBRID:      1,
+		RespondBRID:   66,
+		Linktype:      models.PARENT,
+		IsVPN:         false,
+		JoinStatus:    models.ACTIVE,
+		RespondStatus: models.ACTIVE,
+	}
+	err = cn1.Insert()
+	if err != nil {
+		return
+	}
+	SB := new(models.SCIONBox)
+	SB.MAC = "00:0d:b9:48:82:98"
+	SB.UserEmail = u2.Email
+	SB.Shipping = "SHIPPED"
+	SB.UpdateRequired = false
+	err = SB.Insert()
+	if err != nil {
+		return
+	}
 	if !checkCredentials() {
 		return
 	}
