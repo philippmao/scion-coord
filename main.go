@@ -259,6 +259,8 @@ func main() {
 	scionLabVMController := api.SCIONLabVMController{}
 	scionBoxController := api.SCIONBoxController{}
 
+	go scionBoxController.CheckHBStatus(1, 1016)
+
 	// rate limitation
 	resendLimit := tollbooth.NewLimiter(1, time.Minute*10,
 		&limiter.ExpirableOptions{DefaultExpirationTTL: time.Hour})

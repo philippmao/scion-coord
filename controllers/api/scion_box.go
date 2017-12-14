@@ -384,7 +384,7 @@ func (s *SCIONBoxController) updateDBnewSB(sb *models.SCIONBox, neighbors []topo
 		return nil, fmt.Errorf("Error inserting new SCIONLabAS info. User: %v, %v", newSlas, err)
 	}
 	// Start the goroutine which updates the status
-	go s.checkHBStatus(isd, as)
+	go s.CheckHBStatus(isd, as)
 	// Update the Box information
 	sb.AS = as
 	if err = sb.Update(); err != nil {
@@ -961,7 +961,7 @@ func findCnInNbs(cn models.ConnectionInfo, neighbors []CurrentCn) bool {
 
 // goroutine that periodically checks the time between the time the SLAS called the Heartbeat API
 // if the time is 10 times the HBPERIOD status is set to INACTIVE
-func (s *SCIONBoxController) checkHBStatus(Isd int, As int) {
+func (s *SCIONBoxController) CheckHBStatus(Isd int, As int) {
 	time.Sleep(HeartBeatPeriod * time.Second)
 	for true {
 		slas, err := models.FindSCIONLabASByIAInt(Isd, As)
@@ -978,7 +978,7 @@ func (s *SCIONBoxController) checkHBStatus(Isd int, As int) {
 		delta := time.Now().Sub(slas.Updated)
 		if delta.Seconds() > float64(HeartBeatLimit*HeartBeatPeriod) {
 			if slas.Status != models.INACTIVE {
-				log.Printf("AS Status set to inactive, AS: %v, Time since last HB: %v", slas, delta)
+				log.Printf("AS Status set to inactive, sleep time: %v, limit: %v Time since last HB: %v", HeartBeatPeriod * time.Second, HeartBeatLimit*HeartBeatPeriod, delta.Seconds())
 				slas.Status = models.INACTIVE
 				slas.Update()
 			}
