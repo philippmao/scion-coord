@@ -159,6 +159,10 @@ func main() {
 	if err != nil {
 		return
 	}
+	u4, err := models.RegisterUser("ac3", "ETH", "mail4", "pw4", "g", "h")
+	if err != nil {
+		return
+	}
 	slas1 := &models.SCIONLabAS{
 		UserMail:  u1.Email,
 		PublicIP:  "18.216.205.244",
@@ -244,6 +248,15 @@ func main() {
 	SB2.Shipping = "SHIPPED"
 	SB2.UpdateRequired = false
 	err = SB2.Insert()
+	if err != nil {
+		return
+	}
+	SB3 := new(models.SCIONBox)
+	SB3.MAC = "00:0d:b9:48:4f:5c"
+	SB3.UserEmail = u4.Email
+	SB3.Shipping = "SHIPPED"
+	SB3.UpdateRequired = false
+	err = SB3.Insert()
 	if err != nil {
 		return
 	}
