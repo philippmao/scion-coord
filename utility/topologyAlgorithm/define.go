@@ -25,9 +25,9 @@ const (
 )
 // number of neighbors chosen for each AS
 const(
-	CHOSEN_NEIGHBORS = 3
+	CHOSEN_NEIGHBORS = 2
 )
 // maximal number of neighbors chosen for each AS
 const(
-	MAX_NEIGHBORS = 6
+	MAX_NEIGHBORS = 5
 )
