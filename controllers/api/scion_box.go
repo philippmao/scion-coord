@@ -772,12 +772,12 @@ func (s *SCIONBoxController) HeartBeatFunction(w http.ResponseWriter, r *http.Re
 	vars := mux.Vars(r)
 	account_id := vars["account_id"]
 	secret := vars["secret"]
-	ip, err := s.getSourceIP(r)
-	if err != nil {
-		log.Printf("Error retrivieng source IP: %v", account_id, secret)
-		s.Error500(w, err, "Error retrivieng source IP")
-		return
-	}
+	//ip, err := s.getSourceIP(r)
+	//if err != nil {
+	//	log.Printf("Error retrivieng source IP: %v", account_id, secret)
+	//	s.Error500(w, err, "Error retrivieng source IP")
+	//	return
+	//}
 	var needGen = false
 	var slasList []*models.SCIONLabAS
 	for _, ia := range req.IAList {
@@ -812,12 +812,12 @@ func (s *SCIONBoxController) HeartBeatFunction(w http.ResponseWriter, r *http.Re
 			// TODO Update the box !
 			return
 		}
-		needGen, err = s.HBCheckIP(slas, ip, ia, r)
-		if err != nil {
-			log.Printf("Error running IP checks in HB: %v,", err)
-			s.Error500(w, err, "Error running IP check in HB")
-			return
-		}
+		//needGen, err = s.HBCheckIP(slas, ip, ia, r)
+		//if err != nil {
+		//	log.Printf("Error running IP checks in HB: %v,", err)
+		//	s.Error500(w, err, "Error running IP check in HB")
+		//	return
+		//}
 		// Send connections in the Database to the Box
 		slasList = append(slasList, slas)
 	}
