@@ -994,7 +994,7 @@ func userPackagePath(email string) string {
 }
 
 func getCoreCertPath(isdcredentialpath string, isd string) string {
-	return filepath.Join(isdcredentialpath, "ISD"+isd+"-AS1-V0.crt")
+	return filepath.Join(isdcredentialpath, "ISD"+isd+"-AS11-V0.crt")
 }
 
 func getCoreSigKeyPath(isdcredentialpath string) string {
