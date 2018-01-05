@@ -155,29 +155,21 @@ func main() {
 	if err != nil {
 		return
 	}
-	u3, err := models.RegisterUser("ac3", "ETH", "mail3", "pw3", "e", "f")
-	if err != nil {
-		return
-	}
-	u4, err := models.RegisterUser("ac3", "ETH", "mail4", "pw4", "g", "h")
-	if err != nil {
-		return
-	}
 	slas1 := &models.SCIONLabAS{
 		UserMail:  u1.Email,
-		PublicIP:  "18.216.205.244",
+		PublicIP:  "192.168.254.1",
 		StartPort: 50000,
 		ISD:       1,
-		AS:        1016,
+		AS:        12,
 		Status:    models.ACTIVE,
 		Type:      models.DEDICATED,
 	}
 	slas2 := &models.SCIONLabAS{
 		UserMail:  "admin@ethz.ch",
-		PublicIP:  "192.33.93.195",
+		PublicIP:  "192.168.254.1",
 		StartPort: 50000,
 		ISD:       1,
-		AS:        7,
+		AS:        11,
 		Status:    models.INACTIVE,
 		Type:      models.DEDICATED,
 	}
@@ -223,7 +215,7 @@ func main() {
 		JoinAS:        slas1,
 		RespondAP:     slas2.AP,
 		JoinBRID:      1,
-		RespondBRID:   66,
+		RespondBRID:   1,
 		Linktype:      models.PARENT,
 		IsVPN:         false,
 		JoinStatus:    models.ACTIVE,
@@ -234,29 +226,11 @@ func main() {
 		return
 	}
 	SB := new(models.SCIONBox)
-	SB.MAC = "00:0d:b9:48:82:98"
+	SB.MAC = "00:0d:b9:48:82:9a"
 	SB.UserEmail = u2.Email
 	SB.Shipping = "SHIPPED"
 	SB.UpdateRequired = false
 	err = SB.Insert()
-	if err != nil {
-		return
-	}
-	SB2 := new(models.SCIONBox)
-	SB2.MAC = "06:12:53:a7:0b:3a"
-	SB2.UserEmail = u3.Email
-	SB2.Shipping = "SHIPPED"
-	SB2.UpdateRequired = false
-	err = SB2.Insert()
-	if err != nil {
-		return
-	}
-	SB3 := new(models.SCIONBox)
-	SB3.MAC = "00:0d:b9:48:4f:5c"
-	SB3.UserEmail = u4.Email
-	SB3.Shipping = "SHIPPED"
-	SB3.UpdateRequired = false
-	err = SB3.Insert()
 	if err != nil {
 		return
 	}
@@ -272,7 +246,7 @@ func main() {
 	scionLabVMController := api.SCIONLabVMController{}
 	scionBoxController := api.SCIONBoxController{}
 
-	go scionBoxController.CheckHBStatus(1, 1016)
+	go scionBoxController.CheckHBStatus(1, 12)
 
 	// rate limitation
 	resendLimit := tollbooth.NewLimiter(1, time.Minute*10,
