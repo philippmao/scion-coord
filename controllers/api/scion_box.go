@@ -245,11 +245,13 @@ func (s *SCIONBoxController) getPotentialNeighbors(ip string, mac string) ([]top
 	if err != nil {
 		return potentialNeighbors, -1, err
 	}
+	log.Printf("New Box is in ISD %s", isd)
 	// look trough database for ASes in the same isd
 	pns, err := models.FindPotentialNeighbors(isd)
 	if err != nil {
 		return potentialNeighbors, -1, err
 	}
+	log.Printf("pot. neighbors found: %s", pns)
 	for _, pn := range pns {
 		newnb := topologyAlgorithm.Neighbor{
 			ISD: pn.ISD,
