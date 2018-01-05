@@ -660,7 +660,7 @@ func (s *SCIONBoxController) generateGenFolder(slas *models.SCIONLabAS) error {
 	cmd := exec.Command("python3", localGenPath,
 		"--topo_file="+s.topologyFile(slas), "--user_id="+userEmail,
 		"--joining_ia="+isdID+"-"+asID,
-		"--core_ia="+isdID+"-1",
+		"--core_ia="+isdID+"-11",
 		"--core_sign_priv_key_file="+getCoreSigKeyPath(CoreCredentialsPath),
 		"--core_cert_file="+getCoreCertPath(CoreCredentialsPath, isdID),
 		"--trc_file="+getCoreTrcFilePath(CoreCredentialsPath, isdID),
