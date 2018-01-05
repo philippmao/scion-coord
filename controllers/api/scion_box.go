@@ -174,7 +174,7 @@ func (s *SCIONBoxController) parseRequest(r *http.Request) (isNAT bool, inernal_
 	}
 	mac_address = request.MacAddress
 	internal_ip := request.IPAddress
-	external_ip, err = s.getSourceIP(r)
+	external_ip = "192.168.254.2"
 	if err != nil {
 		return false, "", "", "", 0, 0, err
 	}
