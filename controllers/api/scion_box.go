@@ -814,6 +814,10 @@ func (s *SCIONBoxController) HeartBeatFunction(w http.ResponseWriter, r *http.Re
 			// TODO Update the box !
 			return
 		}
+		if err := s.updateDBConnections(slas, ia.Connections); err != nil {
+			s.BadRequest(w, err, "Error updating DB")
+			return
+		}
 		//needGen, err = s.HBCheckIP(slas, ip, ia, r)
 		//if err != nil {
 		//	log.Printf("Error running IP checks in HB: %v,", err)
