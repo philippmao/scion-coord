@@ -169,7 +169,7 @@ func main() {
 		PublicIP:  "192.168.254.1",
 		StartPort: 50000,
 		ISD:       1,
-		AS:        11,
+		AS:        1,
 		Status:    models.INACTIVE,
 		Type:      models.DEDICATED,
 	}
